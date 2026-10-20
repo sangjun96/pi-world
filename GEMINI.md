@@ -1,0 +1,2 @@
+- commit with conventional commit
+- share tsconfig.json in project root
