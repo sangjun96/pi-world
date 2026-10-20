@@ -8,6 +8,7 @@
 		"packages/*"
 	],
 	"scripts": {
+		"web:dev": "bun --filter web dev",
 		"typecheck": "bun check",
 		"check": "bunx biome check",
 		"check:fix": "bunx biome check --fix"
