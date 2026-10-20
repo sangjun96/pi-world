@@ -1,15 +1,15 @@
-# Elysia with Bun runtime
+# web (PixiJS + Vite)
 
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
-```bash
-bun create elysia ./elysia-example
-```
+PixiJS v8 및 TypeScript 기반의 2D 렌더링 프론트엔드 클라이언트입니다.
 
 ## Development
-To start the development server run:
 ```bash
 bun run dev
 ```
+개발 서버는 `http://localhost:5173`에서 실행되며, `/api` 및 `/ws` 요청은 백엔드 Elysia 서버(`http://localhost:3000`)로 자동 프록시됩니다.
 
-Open http://localhost:3000/ with your browser to see the result.
+## Build
+```bash
+bun run build
+```
+`dist/` 디렉토리에 번들링된 정적 파일이 생성됩니다.
