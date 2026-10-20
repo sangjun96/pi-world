@@ -14,6 +14,9 @@ async function init() {
 		resizeTo: window,
 		backgroundColor: 0x0f172a,
 		antialias: true,
+		resolution: window.devicePixelRatio || 1,
+		autoDensity: true,
+		roundPixels: true,
 	});
 
 	document.body.appendChild(app.canvas);
@@ -37,6 +40,8 @@ async function init() {
 	const label = new Text({
 		text: "Click or tap anywhere!",
 		style,
+		resolution: window.devicePixelRatio || 1,
+		roundPixels: true,
 	});
 	label.anchor.set(0.5);
 	label.x = app.screen.width / 2;
