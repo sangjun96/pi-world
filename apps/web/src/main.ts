@@ -1,6 +1,7 @@
 import { treaty } from "@elysiajs/eden";
 import type { App } from "@pi-world/server";
-import { Application, Graphics, Text, TextStyle } from "pixi.js";
+import gsap from "gsap";
+import { Application, Container, Graphics, Text, TextStyle } from "pixi.js";
 
 // 1. Connect Eden Treaty to Elysia backend with full type safety
 const api = treaty<App>(window.location.origin);
@@ -12,7 +13,7 @@ async function init() {
 	const app = new Application();
 	await app.init({
 		resizeTo: window,
-		backgroundColor: 0x0f172a,
+		backgroundColor: 0x09090b,
 		antialias: true,
 		resolution: window.devicePixelRatio || 1,
 		autoDensity: true,
@@ -21,66 +22,86 @@ async function init() {
 
 	document.body.appendChild(app.canvas);
 
-	// 3. Create interactive spinning visual element
-	const star = new Graphics();
-	star.star(0, 0, 5, 80, 40);
-	star.fill({ color: 0x38bdf8 });
-	star.stroke({ width: 3, color: 0xe0f2fe });
-	star.x = app.screen.width / 2;
-	star.y = app.screen.height / 2;
-	app.stage.addChild(star);
+	// 3. Create minimal geometric node
+	const node = new Container();
+	node.position.set(app.screen.width / 2, app.screen.height / 2);
+	app.stage.addChild(node);
 
-	// 4. Create floating instruction text
-	const style = new TextStyle({
-		fontFamily: "sans-serif",
-		fontSize: 16,
-		fill: 0xffffff,
-		align: "center",
-	});
+	const orbit = new Graphics()
+		.circle(0, 0, 48)
+		.stroke({ width: 1, color: 0xffffff, alpha: 0.14 })
+		.poly([0, -34, 34, 0, 0, 34, -34, 0])
+		.stroke({ width: 1, color: 0xffffff, alpha: 0.28 });
+
+	const core = new Graphics()
+		.circle(0, 0, 16)
+		.fill({ color: 0xffffff, alpha: 0.05 })
+		.circle(0, 0, 3.5)
+		.fill({ color: 0xf4f4f5 });
+
+	// 4. Create subtle instruction text
 	const label = new Text({
-		text: "Click or tap anywhere!",
-		style,
+		text: "CLICK ANYWHERE",
+		style: new TextStyle({
+			fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+			fontSize: 11,
+			fontWeight: "500",
+			letterSpacing: 3,
+			fill: 0x71717a,
+		}),
 		resolution: window.devicePixelRatio || 1,
 		roundPixels: true,
 	});
 	label.anchor.set(0.5);
-	label.x = app.screen.width / 2;
-	label.y = app.screen.height / 2 + 120;
-	app.stage.addChild(label);
+	label.y = 84;
 
-	// 5. Animation loop
-	app.ticker.add((ticker) => {
-		star.rotation += 0.015 * ticker.deltaTime;
+	node.addChild(orbit, core, label);
+
+	// 5. GSAP idle animations & interactive quickTo
+	gsap.to(orbit, {
+		rotation: Math.PI * 2,
+		duration: 24,
+		repeat: -1,
+		ease: "none",
+	});
+	gsap.to(orbit.scale, {
+		x: 1.05,
+		y: 1.05,
+		duration: 2,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
 	});
 
-	// 6. Interactive click event
+	const moveX = gsap.quickTo(node, "x", { duration: 0.6, ease: "power3.out" });
+	const moveY = gsap.quickTo(node, "y", { duration: 0.6, ease: "power3.out" });
+
 	app.stage.eventMode = "static";
 	app.stage.hitArea = app.screen;
 	app.stage.on("pointerdown", (event) => {
-		star.x = event.global.x;
-		star.y = event.global.y;
-		label.x = event.global.x;
-		label.y = event.global.y + 120;
+		moveX(event.global.x);
+		moveY(event.global.y);
+		gsap.fromTo(
+			core.scale,
+			{ x: 1.8, y: 1.8 },
+			{ x: 1, y: 1, duration: 0.6, ease: "expo.out", overwrite: true },
+		);
 	});
 
-	// 7. Request Elysia backend with Eden Treaty
+	// 6. Request Elysia backend with Eden Treaty
 	try {
 		const response = await api.api.hello.get();
-		if (response.data) {
-			if (statusElem) {
-				statusElem.textContent = `🟢 연결됨: ${response.data.message} (${new Date(response.data.timestamp).toLocaleTimeString()})`;
-				statusElem.style.color = "#4ade80";
-			}
-		} else if (response.error) {
-			if (statusElem) {
-				statusElem.textContent = "🔴 서버 응답 오류";
-				statusElem.style.color = "#f87171";
-			}
+		if (response.data && statusElem) {
+			statusElem.textContent = `● 연결됨 · ${response.data.message}`;
+			statusElem.style.color = "#a1a1aa";
+		} else if (response.error && statusElem) {
+			statusElem.textContent = "● 서버 응답 오류";
+			statusElem.style.color = "#f87171";
 		}
 	} catch {
 		if (statusElem) {
-			statusElem.textContent = "⚠️ 서버 오프라인 (Elysia 미실행)";
-			statusElem.style.color = "#fbbf24";
+			statusElem.textContent = "○ 서버 오프라인";
+			statusElem.style.color = "#71717a";
 		}
 	}
 }
