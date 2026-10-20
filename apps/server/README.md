@@ -1,4 +1,4 @@
-# server (Elysia + Bun)
+# @pi-world/server (Elysia + Bun)
 
 Bun 런타임 기반의 고성능 Elysia 백엔드 서버입니다.
 

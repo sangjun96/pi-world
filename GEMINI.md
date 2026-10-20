@@ -1,2 +1,3 @@
-- commit with conventional commit
+- use bun
+- get review and commit with conventional commit
 - share tsconfig.json in project root

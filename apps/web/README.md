@@ -1,4 +1,4 @@
-# web (PixiJS + Vite)
+# @pi-world/web (PixiJS + Vite)
 
 PixiJS v8 및 TypeScript 기반의 2D 렌더링 프론트엔드 클라이언트입니다.
 

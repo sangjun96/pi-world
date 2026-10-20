@@ -5,7 +5,11 @@ import { staticPlugin } from "@elysiajs/static";
 import { Elysia } from "elysia";
 
 const PORT = Number(process.env.PORT) || 3000;
-const clientDistPath = resolve(import.meta.dir, "../../web/dist");
+const clientDistPath =
+	process.env.CLIENT_DIST_PATH ||
+	(existsSync(resolve(process.cwd(), "apps/web/dist"))
+		? resolve(process.cwd(), "apps/web/dist")
+		: resolve(import.meta.dir, "../../web/dist"));
 
 export const app = new Elysia().use(cors()).group("/api", (app) =>
 	app

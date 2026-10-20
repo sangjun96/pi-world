@@ -1,5 +1,5 @@
 {
-	"name": "web",
+	"name": "@pi-world/web",
 	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
@@ -13,6 +13,7 @@
 		"pixi.js": "^8.8.0"
 	},
 	"devDependencies": {
+		"@pi-world/server": "workspace:*",
 		"vite": "^6.2.0"
 	}
 }

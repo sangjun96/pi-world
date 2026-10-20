@@ -1,6 +1,6 @@
 import { treaty } from "@elysiajs/eden";
+import type { App } from "@pi-world/server";
 import { Application, Graphics, Text, TextStyle } from "pixi.js";
-import type { App } from "../../server/src/index";
 
 // 1. Connect Eden Treaty to Elysia backend with full type safety
 const api = treaty<App>(window.location.origin);
