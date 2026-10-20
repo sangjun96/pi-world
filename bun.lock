@@ -18,9 +18,6 @@
       "dependencies": {
         "elysia": "latest",
       },
-      "devDependencies": {
-        "bun-types": "latest",
-      },
     },
   },
   "packages": {
